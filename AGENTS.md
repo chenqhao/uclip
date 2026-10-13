@@ -44,6 +44,7 @@ Never say "just add this dependency". For each new crate or dev tool: (1) why it
 - Never run destructive commands (`rm -rf`, `git reset --hard`, force-push, deleting the user's real config directory) without explicit approval.
 - Never add a dependency silently. If you can't see the user's code, ask for it and the full compiler output.
 - Platform rules change with OS releases. Before designing OS-specific code, verify current docs for the user's OS versions, record findings in `docs/platform-notes.md`, and say what you verified vs assumed.
+- Model capability check: Whenever you feel that the current AI model might not be greatly capable of handling a complex phase or nuanced architectural task, proactively notify the user so they can switch models.
 
 ## 6. Session protocol
 
