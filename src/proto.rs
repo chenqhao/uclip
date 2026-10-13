@@ -1,9 +1,10 @@
+use crate::engine::HybridTimestamp;
 use crate::{ClipContent, DeviceId};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 /// Current wire protocol version.
-pub const PROTOCOL_VERSION: u16 = 1;
+pub const PROTOCOL_VERSION: u16 = 2;
 
 /// Supported content capabilities advertised during the handshake.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -35,8 +36,7 @@ pub enum Message {
     ClipUpdate {
         update_id: Uuid,
         origin: DeviceId,
-        lamport: u64,
-        created_at_ms: u64,
+        timestamp: HybridTimestamp,
         content: ClipContent,
     },
     Ping {
@@ -97,7 +97,7 @@ mod tests {
 
         assert_eq!(
             json,
-            r#"{"type":"hello","protocol_version":1,"device_id":"11111111-1111-1111-1111-111111111111","device_name":"Howie's Mac","capabilities":["text"]}"#
+            r#"{"type":"hello","protocol_version":2,"device_id":"11111111-1111-1111-1111-111111111111","device_name":"Howie's Mac","capabilities":["text"]}"#
         );
 
         let parsed: Message = serde_json::from_str(&json).expect("failed to deserialize");
@@ -111,8 +111,7 @@ mod tests {
         let update_msg = Message::ClipUpdate {
             update_id: update,
             origin: origin_id,
-            lamport: 42,
-            created_at_ms: 1700000000000,
+            timestamp: HybridTimestamp::new(1700000000000, 42),
             content: ClipContent::Text {
                 text: "sync me".to_string(),
             },
@@ -122,7 +121,7 @@ mod tests {
 
         assert_eq!(
             json,
-            r#"{"type":"clip_update","update_id":"22222222-2222-2222-2222-222222222222","origin":"11111111-1111-1111-1111-111111111111","lamport":42,"created_at_ms":1700000000000,"content":{"type":"text","text":"sync me"}}"#
+            r#"{"type":"clip_update","update_id":"22222222-2222-2222-2222-222222222222","origin":"11111111-1111-1111-1111-111111111111","timestamp":{"wall_ms":1700000000000,"counter":42},"content":{"type":"text","text":"sync me"}}"#
         );
 
         let parsed: Message = serde_json::from_str(&json).expect("failed to deserialize");

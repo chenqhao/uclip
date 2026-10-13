@@ -17,7 +17,10 @@ pub use clipboard::{
     ClipContent, ClipboardBackend, ClipboardError, FileClipboard, MemoryClipboard, SystemClipboard,
     create_backend, create_backend_from_spec,
 };
-pub use engine::{Action, Engine, LamportClock, UpdateId};
+pub use engine::{
+    Action, ClockDriftError, DEFAULT_MAX_DRIFT_MS, Engine, HybridLogicalClock, HybridTimestamp,
+    LamportClock, UpdateId,
+};
 pub use proto::{Capability, GoodbyeReason, Message, PROTOCOL_VERSION};
 pub use watcher::{ClipEvent, PollingWatcher, WatcherHandle};
 
